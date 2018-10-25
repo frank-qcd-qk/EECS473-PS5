@@ -1,48 +1,71 @@
 //irb120_reactive_task_commander.cpp
+// Originally written by Dr. Wyatt Neuman
+// Modified by Chude Qian CXQ41@case.edu
 //this version is a variation on irb120_task_commander, but adds an action client of
 //the magic_object_finder to make the robot move in response to perceived objects
-
+using namespace std;  // avoids having to say: std::string, std::cout, etc
+// Mandatory for all ROS projects
 #include <ros/ros.h>
-
-#include <Eigen/Eigen> //for the Eigen library
+// Following are Eigen Math Classes
+#include <Eigen/Eigen>
 #include <Eigen/Dense>
 #include <Eigen/Geometry>
-using namespace std; // avoids having to say: std::string, std::cout, etc
-#include <irb120_fk_ik/irb120_kinematics.h>  //access to forward and inverse kinematics
-#include <fk_ik_virtual/fk_ik_virtual.h> //defines the base class with virtual fncs
 // this is useful to keep the motion planner generic
+// Files can be find within the src folder
 #include "robot_specific_fk_ik_mappings.h" //these two files are needed to provide robot-specific info to generic planner
 #include "robot_specific_names.h"
-
+// The following libraries can be found under the dependencies folder.
 #include <generic_cartesian_planner/generic_cartesian_planner.h>
 #include <cartesian_interpolator/cartesian_interpolator.h>
-
+#include <irb120_fk_ik/irb120_kinematics.h>  //access to forward and inverse kinematics
+#include <fk_ik_virtual/fk_ik_virtual.h> //defines the base class with virtual fncs
+// Msgs definition
 #include <geometry_msgs/PoseStamped.h>
 #include <trajectory_msgs/JointTrajectory.h>
 #include<sensor_msgs/JointState.h>
-
 //add these to use the "magic" object finder action server
 #include <actionlib/client/simple_action_client.h>
 #include <actionlib/client/terminal_state.h>
 #include <magic_object_finder/magicObjectFinderAction.h>
+// the following will be useful when need tool transforms
+// #include <tf/transform_listener.h>
+// #include <xform_utils/xform_utils.h>
+// XformUtils xformUtils; //handy conversion utilities--but don't need these yet
 
-//the following will be useful when need tool transforms
-//#include <tf/transform_listener.h>
-//#include <xform_utils/xform_utils.h>
-
-//XformUtils xformUtils; //handy conversion utilities--but don't need these yet
-
+//! The following variables are magical and global.
+// TUNE: specify weights to use for planner optimization
 //some magic numbers--place at the top of the program
 std::vector<double> g_planner_joint_weights{3, 3, 2, 1, 1, 0.5}; //specify weights to use for planner optimization
+string g_object_name("gear_part_ariac");  //hard-coded object of interest name; edit this for different objects
 
-//another magic value: hard-coded name of object of interest
-string g_object_name("gear_part_ariac");  //hard-coded object name; edit this for different objects
-int g_found_object_code; //global to communicate between callback and main: true if named object was found
-geometry_msgs::PoseStamped g_perceived_object_pose; //global to communicate between callback and main: pose  of found object
 
+
+//! The following variables are made global in order to make the function
+//! runnable.
+ros::Publisher traj_publisher; // Publisher is included in the function therefore initiated on main, and then
 ros::Publisher *g_pose_publisher; //make this global so callback can access it--for displaying object frames in rviz
 
 CartTrajPlanner *pCartTrajPlanner; //does  not  have to be global, unless needed by other functions
+
+
+Eigen::Affine3d goal_flange_affine;  // specify start and goal in Cartesian coords
+
+
+
+
+//! The following are global variables for control stop/kill switch
+int g_found_object_code; //global to communicate between callback and main: true if named object was found
+
+
+
+
+
+
+
+
+geometry_msgs::PoseStamped g_perceived_object_pose; //global to communicate between callback and main: pose  of found object
+
+
 
 //arm pose in joint space; the only reason this is global is that it will be useful, in the future, for it
 //to be updated by a subscriber to joint_states

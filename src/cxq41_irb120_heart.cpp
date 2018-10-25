@@ -1,37 +1,3 @@
-// irb_task_commander.cpp
-// Originally written by Dr. Wyatt Neuman
-// Modified by Chude Qian CXQ41@case.edu
-using namespace std;  // avoids having to say: std::string, std::cout, etc
-// Mandatory for all ROS projects
-#include <ros/ros.h>
-// Following are Eigen Math Classes
-#include <Eigen/Dense>
-#include <Eigen/Eigen>
-#include <Eigen/Geometry>
-// The following libraries can be found under the dependencies folder.
-#include <cartesian_interpolator/cartesian_interpolator.h>
-#include <fk_ik_virtual/fk_ik_virtual.h>  //defines the base class with virtual fncs
-#include <generic_cartesian_planner/generic_cartesian_planner.h>
-#include <irb120_fk_ik/irb120_kinematics.h>  //access to forward and inverse kinematics
-// this is useful to keep the motion planner generic
-// Files can be find within the src folder
-#include "robot_specific_fk_ik_mappings.h"  //these two files are needed to provide robot-specific info to generic planner
-#include "robot_specific_names.h"
-// Msgs definition
-#include <geometry_msgs/PoseStamped.h>
-#include <sensor_msgs/JointState.h>
-#include <trajectory_msgs/JointTrajectory.h>
-// the following will be useful when need tool transforms
-// #include <tf/transform_listener.h>
-// #include <xform_utils/xform_utils.h>
-// XformUtils xformUtils; //handy conversion utilities--but don't need these yet
-
-//! The following variables are global.
-// TUNE: specify weights to use for planner optimization
-std::vector<double> g_planner_joint_weights{3, 3, 2, 1, 1, 0.5};
-// Publisher is included in the function therefore initiated on main, and then
-// called in function
-ros::Publisher traj_publisher;
 
 //! The following variables are made global in order to make the function
 //! runnable.
