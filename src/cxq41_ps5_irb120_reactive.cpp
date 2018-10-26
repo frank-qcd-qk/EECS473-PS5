@@ -299,7 +299,7 @@ int main(int argc, char** argv) {
     goal_flange_affine.linear() =
         R_down;  // set the  goal orientation for flange to point down; will not
                  // need to change this for now
-    ROS_INFO("INITIATION DONE!!! HAND OVER to Frank's code")
+    ROS_INFO("INITIATION DONE!!! HAND OVER to Frank's code");
     ros::Duration(1).sleep(); //Debug purpose so the command line is not jammed.
 
 
@@ -378,4 +378,5 @@ int main(int argc, char** argv) {
     ros::Duration(arrival_time)
         .sleep();  // wait for the motion to complete (dead reckoning)
     ROS_INFO("done with first trajectory");
+}
     // xxxxxxxxxxxxxxxxxx
