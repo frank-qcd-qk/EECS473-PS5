@@ -303,6 +303,10 @@ int main(int argc, char** argv) {
     ros::Duration(1)
         .sleep();  // Debug purpose so the command line is not jammed.
 
+
+
+
+
     // xxxxxxxxxxxxxx  the following makes an inquiry for the pose of the part
     // of interest specify the part name, send it in the goal message, wait for
     // and interpret the result
