@@ -296,7 +296,11 @@ int main(int argc, char** argv) {
     ROS_INFO_STREAM("fwd soln: orientation: " << endl
                                               << start_flange_affine.linear()
                                               << endl);
-
+    goal_flange_affine.linear() =
+        R_down;  // set the  goal orientation for flange to point down; will not
+                 // need to change this for now
+    ROS_INFO("INITIATION DONE!!! HAND OVER to Frank's code")
+    ros::Duration(1).sleep(); //Debug purpose so the command line is not jammed.
 
 
 
@@ -335,9 +339,7 @@ int main(int argc, char** argv) {
     // xxxxxxxxxx   done with inquiry.  If here, then part pose is in
     // g_perceived_object_pose.  Use it to compute robot motion
 
-    goal_flange_affine.linear() =
-        R_down;  // set the  goal orientation for flange to point down; will not
-                 // need to change this for now
+
     // xxxx  use the x and y coordinates of the gear part, but specify a higher
     // z value
     flange_origin << g_perceived_object_pose.pose.position.x,
