@@ -185,14 +185,8 @@ void moveRobotTo(float x, float y, float z, int resolution, int motionTime) {
     ROS_INFO("Movement complete!....");
 }
 
-int main(int argc, char** argv) {
-    ros::init(argc, argv, "reactive_commander");  // name this node
-    ros::NodeHandle nh;                           // standard ros node handle
-    Eigen::Affine3d
-        start_flange_affine;  // specify start and goal in Cartesian coords
-    trajectory_msgs::JointTrajectory
-        new_trajectory;  // will package trajectory messages here
-
+void updatePosition(){
+    ros::NodeHandle n;
     //! The following part of the code is the action server for obtaining the
     // set up an action client to query object poses using the magic object
     // finder
@@ -212,7 +206,7 @@ int main(int argc, char** argv) {
                                                            // connected to the
                                                            // server;
     ros::Publisher pose_publisher =
-        nh.advertise<geometry_msgs::PoseStamped>("triad_display_pose", 1, true);
+        n.advertise<geometry_msgs::PoseStamped>("triad_display_pose", 1, true);
     g_pose_publisher = &pose_publisher;
     magic_object_finder::magicObjectFinderGoal
         object_finder_goal;  // instantiate goal message to communicate with
@@ -235,7 +229,7 @@ int main(int argc, char** argv) {
         ROS_ERROR("giving up waiting on result ");  // this should not happen;
                                                     // should get result of
                                                     // found or not-found
-        return 1;
+        killSwitch = 1;  // There should be an observer inside the loop
     }
     // check the result code to see if object was found or not
     if (g_found_object_code ==
@@ -243,10 +237,21 @@ int main(int argc, char** argv) {
         ROS_INFO("found object!");
     } else {
         ROS_ERROR("object not found! Quitting");
-        return 1;
+        killSwitch = 1;  // There should be an observer inside the loop
     }
     //! End magic object finder initiator
+}
 
+int main(int argc, char** argv) {
+    ros::init(argc, argv, "reactive_commander");  // name this node
+    ros::NodeHandle nh;                           // standard ros node handle
+    Eigen::Affine3d
+        start_flange_affine;  // specify start and goal in Cartesian coords
+    trajectory_msgs::JointTrajectory
+        new_trajectory;  // will package trajectory messages here
+
+    
+    updatePosition();
     //! Initiation Stage. Hard Coded.
     // the following is an std::vector of affines.  It describes a path in
     // Cartesian coords, including orientations not needed yet; is constructed
