@@ -188,11 +188,11 @@ void moveRobotTo(float x, float y, float z, int resolution, int motionTime) {
 int main(int argc, char** argv) {
     ros::init(argc, argv, "reactive_commander");  // name this node
     ros::NodeHandle nh;                           // standard ros node handle
+
     Eigen::Affine3d
         start_flange_affine;  // specify start and goal in Cartesian coords
     trajectory_msgs::JointTrajectory
         new_trajectory;  // will package trajectory messages here
-
     //! The following part of the code is the action server for obtaining the
     // set up an action client to query object poses using the magic object
     // finder
@@ -336,10 +336,5 @@ int main(int argc, char** argv) {
     ROS_INFO("INITIATION DONE!!! HAND OVER to Path finding part of code.....");
     ros::Duration(10)
         .sleep();  // Debug purpose so the command line is not jammed.
-
-
-
-
-
 
 }

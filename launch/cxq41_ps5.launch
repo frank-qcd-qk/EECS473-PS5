@@ -3,6 +3,8 @@
     <!-- This launch file serve the purpose of calling the official irb120 description launch file-->
     <include file="$(find irb120_description)/irb120.launch"></include>
     <!-- Runs rvis file-->
+    <!--
     <node name = "rviz_monitor" type="rviz" pkg="rviz" args="-d $(find cxq41_ps5_irb120_reactive)/rviz_config/irb120_record_path.rviz" />
+    -->
     <node name = "Sensor" pkg = "magic_object_finder" type = "magic_object_finder" output = "screen"/>
 </launch>
