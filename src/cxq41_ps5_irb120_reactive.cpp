@@ -178,8 +178,7 @@ void moveRobotTo(float x, float y, float z, int resolution, int motionTime) {
     // convert the path to a trajectory (adds joint-space names,  arrival times,
     // etc)
     pCartTrajPlanner->path_to_traj(optimal_path, motionTime, new_trajectory);
-    print_traj(
-        new_trajectory);  // Enable only if you want to get flushed by data.
+    //print_traj(new_trajectory);  // Enable only if you want to get flushed by data.
     traj_publisher.publish(new_trajectory);  // publish the trajectory
     ros::Duration(motionTime).sleep();       // wait for the motion
     ROS_INFO("Movement complete!....");
@@ -249,10 +248,13 @@ int main(int argc, char** argv) {
         start_flange_affine;  // specify start and goal in Cartesian coords
     trajectory_msgs::JointTrajectory
         new_trajectory;  // will package trajectory messages here
-
     
     updatePosition();
-    //! Initiation Stage. Hard Coded.
+    if (killSwitch == 1) {
+        ROS_ERROR("NO object found, throwing error now....");
+        return 1;
+    }
+    //! Initiation Stage based on updated position. Hard Coded.
     // the following is an std::vector of affines.  It describes a path in
     // Cartesian coords, including orientations not needed yet; is constructed
     // inside the generic planner by interpolation std::vector<Eigen::Affine3d>
@@ -341,4 +343,9 @@ int main(int argc, char** argv) {
         ROS_ERROR("NO path found, throwing error now....");
         return 1;
     }
+    ros::Duration(10)
+        .sleep();  // Debug purpose so the command line is not jammed.
+    updatePosition();
+    moveRobotTo(g_perceived_object_pose.pose.position.x,
+                g_perceived_object_pose.pose.position.y, 0.5, 10, 2);
 }
