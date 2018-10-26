@@ -11,15 +11,15 @@ using namespace std;  // avoids having to say: std::string, std::cout, etc
 #include <Eigen/Dense>
 #include <Eigen/Eigen>
 #include <Eigen/Geometry>
-// this is useful to keep the motion planner generic
-// Files can be find within the src folder
-#include "robot_specific_fk_ik_mappings.h"  //these two files are needed to provide robot-specific info to generic planner
-#include "robot_specific_names.h"
 // The following libraries can be found under the dependencies folder.
 #include <cartesian_interpolator/cartesian_interpolator.h>
 #include <fk_ik_virtual/fk_ik_virtual.h>  //defines the base class with virtual fncs
 #include <generic_cartesian_planner/generic_cartesian_planner.h>
 #include <irb120_fk_ik/irb120_kinematics.h>  //access to forward and inverse kinematics
+// this is useful to keep the motion planner generic
+// Files can be find within the src folder
+#include "robot_specific_fk_ik_mappings.h"  //these two files are needed to provide robot-specific info to generic planner
+#include "robot_specific_names.h"
 // Msgs definition
 #include <geometry_msgs/PoseStamped.h>
 #include <sensor_msgs/JointState.h>
