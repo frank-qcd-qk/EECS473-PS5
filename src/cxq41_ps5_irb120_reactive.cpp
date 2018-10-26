@@ -211,14 +211,41 @@ int main(int argc, char** argv) {
     ROS_INFO("connected to object_finder action server");  // if here, then we
                                                            // connected to the
                                                            // server;
-    //! End magic object finder initiator
-
     ros::Publisher pose_publisher =
         nh.advertise<geometry_msgs::PoseStamped>("triad_display_pose", 1, true);
     g_pose_publisher = &pose_publisher;
     magic_object_finder::magicObjectFinderGoal
         object_finder_goal;  // instantiate goal message to communicate with
                              // magic_object_finder
+    // xxxxxxxxxxxxxx  the following makes an inquiry for the pose of the part
+    // of interest specify the part name, send it in the goal message, wait for
+    // and interpret the result
+    object_finder_goal.object_name =
+        g_object_name
+            .c_str();  // convert string object to old C-style string data
+    object_finder_ac.sendGoal(
+        object_finder_goal,
+        &objectFinderDoneCb);  // request object finding via action server
+
+    finished_before_timeout = object_finder_ac.waitForResult(
+        ros::Duration(10.0));  // wait for a max time for response
+    // NOTE: could do something else here (if useful) while waiting for response
+    // from action server
+    if (!finished_before_timeout) {
+        ROS_ERROR("giving up waiting on result ");  // this should not happen;
+                                                    // should get result of
+                                                    // found or not-found
+        return 1;
+    }
+    // check the result code to see if object was found or not
+    if (g_found_object_code ==
+        magic_object_finder::magicObjectFinderResult::OBJECT_FOUND) {
+        ROS_INFO("found object!");
+    } else {
+        ROS_ERROR("object not found! Quitting");
+        return 1;
+    }
+    //! End magic object finder initiator
 
     //! Initiation Stage. Hard Coded.
     // the following is an std::vector of affines.  It describes a path in
@@ -300,81 +327,13 @@ int main(int argc, char** argv) {
         R_down;  // set the  goal orientation for flange to point down; will not
                  // need to change this for now
     ROS_INFO("INITIATION DONE!!! HAND OVER to Frank's code");
-    ros::Duration(1)
+    ros::Duration(10)
         .sleep();  // Debug purpose so the command line is not jammed.
 
-
-
-
-
-    // xxxxxxxxxxxxxx  the following makes an inquiry for the pose of the part
-    // of interest specify the part name, send it in the goal message, wait for
-    // and interpret the result
-    object_finder_goal.object_name =
-        g_object_name
-            .c_str();  // convert string object to old C-style string data
-    object_finder_ac.sendGoal(
-        object_finder_goal,
-        &objectFinderDoneCb);  // request object finding via action server
-
-    finished_before_timeout = object_finder_ac.waitForResult(
-        ros::Duration(10.0));  // wait for a max time for response
-    // NOTE: could do something else here (if useful) while waiting for response
-    // from action server
-    if (!finished_before_timeout) {
-        ROS_WARN("giving up waiting on result ");  // this should not happen;
-                                                   // should get result of found
-                                                   // or not-found
+    moveRobotTo(g_perceived_object_pose.pose.position.x,
+                g_perceived_object_pose.pose.position.y, 0.5, 10, 2);
+    if (killSwitch == 1) {
+        ROS_ERROR("NO path found, throwing error now....");
         return 1;
     }
-    // check the result code to see if object was found or not
-    if (g_found_object_code ==
-        magic_object_finder::magicObjectFinderResult::OBJECT_FOUND) {
-        ROS_INFO("found object!");
-    } else {
-        ROS_WARN("object not found!  Quitting");
-        return 1;
-    }
-    // xxxxxxxxxx   done with inquiry.  If here, then part pose is in
-    // g_perceived_object_pose.  Use it to compute robot motion
-
-    // xxxx  use the x and y coordinates of the gear part, but specify a higher
-    // z value
-    flange_origin << g_perceived_object_pose.pose.position.x,
-        g_perceived_object_pose.pose.position.y,
-        0.5;  // specify coordinates for the desired flange position (origin)
-              // with respect to the robot's base frame
-    goal_flange_affine.translation() =
-        flange_origin;  // make this part of the flange  affine description
-    ROS_INFO_STREAM("move to flange origin= "
-                    << goal_flange_affine.translation().transpose() << endl);
-    ROS_INFO_STREAM("with orientation: " << endl
-                                         << goal_flange_affine.linear()
-                                         << endl);
-
-    // interpolate from start pose to goal pose with this many samples along
-    // Cartesian path
-    nsteps = 5;  // arbitrary; tune me
-
-    // compute an optimal joint-space path:
-    optimal_path.clear();
-    // planner will return "false" if unsuccessful; should add error handling
-    // successful result will be a joint-space path in optimal_path
-    if (!pCartTrajPlanner->plan_cartesian_path_w_rot_interp(
-            g_q_vec_arm_Xd, goal_flange_affine, nsteps, optimal_path)) {
-        ROS_WARN(
-            "no feasible IK path for specified Cartesian motion; quitting");
-        return 1;
-    }
-    // if here, have a viable joint-space path; convert it to a trajectory:
-    // choose arrival time--to  be  tuned
-    arrival_time = 2.0;
-    pCartTrajPlanner->path_to_traj(optimal_path, arrival_time, new_trajectory);
-    print_traj(new_trajectory);
-    traj_publisher.publish(
-        new_trajectory);  // publish the trajectory--this should move  the robot
-    ros::Duration(arrival_time)
-        .sleep();  // wait for the motion to complete (dead reckoning)
-    ROS_INFO("done with first trajectory");
 }
-// xxxxxxxxxxxxxxxxxx
