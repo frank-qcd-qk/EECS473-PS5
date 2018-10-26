@@ -72,7 +72,7 @@ geometry_msgs::PoseStamped
     g_perceived_object_pose;  // global to communicate between callback and
                               // main: pose  of found object
 
-// a utility for debugging: displays affines (origins only) from an std::vector
+//! a utility for debugging: displays affines (origins only) from an std::vector
 // of affines
 void print_affines(std::vector<Eigen::Affine3d> affine_path) {
     int npts = affine_path.size();
@@ -82,7 +82,7 @@ void print_affines(std::vector<Eigen::Affine3d> affine_path) {
     }
 }
 
-// a utility for debugging: displays a trajectory message
+//! a utility for debugging: displays a trajectory message
 void print_traj(trajectory_msgs::JointTrajectory des_trajectory) {
     int npts = des_trajectory.points.size();
     int njnts = des_trajectory.points[0].positions.size();
@@ -99,10 +99,10 @@ void print_traj(trajectory_msgs::JointTrajectory des_trajectory) {
     }
 }
 
-// this callback function receives a result from the magic object finder action
-// server it sets g_found_object_code to true or false, depending on whether the
-// object was found if the object was found, then components of
-// g_perceived_object_pose are filled in
+//! this callback function receives a result from the magic object finder action
+//! server it sets g_found_object_code to true or false, depending on whether
+//! the object was found if the object was found, then components of
+//! g_perceived_object_pose are filled in
 void objectFinderDoneCb(
     const actionlib::SimpleClientGoalState& state,
     const magic_object_finder::magicObjectFinderResultConstPtr& result) {
@@ -188,11 +188,12 @@ void moveRobotTo(float x, float y, float z, int resolution, int motionTime) {
 int main(int argc, char** argv) {
     ros::init(argc, argv, "reactive_commander");  // name this node
     ros::NodeHandle nh;                           // standard ros node handle
-    Eigen::Affine3d start_flange_affine;  // specify start and goal in Cartesian coords
+    Eigen::Affine3d
+        start_flange_affine;  // specify start and goal in Cartesian coords
     trajectory_msgs::JointTrajectory
         new_trajectory;  // will package trajectory messages here
 
-    //! The following part of the code is the action server for obtaining the 
+    //! The following part of the code is the action server for obtaining the
     // set up an action client to query object poses using the magic object
     // finder
     actionlib::SimpleActionClient<magic_object_finder::magicObjectFinderAction>
@@ -218,7 +219,6 @@ int main(int argc, char** argv) {
     magic_object_finder::magicObjectFinderGoal
         object_finder_goal;  // instantiate goal message to communicate with
                              // magic_object_finder
-
 
     //! Initiation Stage. Hard Coded.
     // the following is an std::vector of affines.  It describes a path in
@@ -300,13 +300,8 @@ int main(int argc, char** argv) {
         R_down;  // set the  goal orientation for flange to point down; will not
                  // need to change this for now
     ROS_INFO("INITIATION DONE!!! HAND OVER to Frank's code");
-    ros::Duration(1).sleep(); //Debug purpose so the command line is not jammed.
-
-
-
-
-
-
+    ros::Duration(1)
+        .sleep();  // Debug purpose so the command line is not jammed.
 
     // xxxxxxxxxxxxxx  the following makes an inquiry for the pose of the part
     // of interest specify the part name, send it in the goal message, wait for
@@ -338,7 +333,6 @@ int main(int argc, char** argv) {
     }
     // xxxxxxxxxx   done with inquiry.  If here, then part pose is in
     // g_perceived_object_pose.  Use it to compute robot motion
-
 
     // xxxx  use the x and y coordinates of the gear part, but specify a higher
     // z value
@@ -379,4 +373,4 @@ int main(int argc, char** argv) {
         .sleep();  // wait for the motion to complete (dead reckoning)
     ROS_INFO("done with first trajectory");
 }
-    // xxxxxxxxxxxxxxxxxx
+// xxxxxxxxxxxxxxxxxx
