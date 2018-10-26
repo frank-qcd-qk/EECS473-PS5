@@ -192,7 +192,7 @@ int main(int argc, char** argv) {
     trajectory_msgs::JointTrajectory
         new_trajectory;  // will package trajectory messages here
 
-//! The following part of the code is the action server for obtaining the 
+    //! The following part of the code is the action server for obtaining the 
     // set up an action client to query object poses using the magic object
     // finder
     actionlib::SimpleActionClient<magic_object_finder::magicObjectFinderAction>
@@ -210,6 +210,8 @@ int main(int argc, char** argv) {
     ROS_INFO("connected to object_finder action server");  // if here, then we
                                                            // connected to the
                                                            // server;
+    //! End magic object finder initiator
+
     ros::Publisher pose_publisher =
         nh.advertise<geometry_msgs::PoseStamped>("triad_display_pose", 1, true);
     g_pose_publisher = &pose_publisher;
@@ -217,6 +219,8 @@ int main(int argc, char** argv) {
         object_finder_goal;  // instantiate goal message to communicate with
                              // magic_object_finder
 
+
+    //! Initiation Stage. Hard Coded.
     // the following is an std::vector of affines.  It describes a path in
     // Cartesian coords, including orientations not needed yet; is constructed
     // inside the generic planner by interpolation std::vector<Eigen::Affine3d>
@@ -250,7 +254,7 @@ int main(int argc, char** argv) {
             // joint_states to get actual angles
 
     // our irb120 control  interface uses this topic to receive trajectories
-    ros::Publisher traj_publisher =
+    traj_publisher =
         nh.advertise<trajectory_msgs::JointTrajectory>("joint_path_command", 1);
 
     // somewhat odd construction: a pointer to an object of type
@@ -292,6 +296,13 @@ int main(int argc, char** argv) {
     ROS_INFO_STREAM("fwd soln: orientation: " << endl
                                               << start_flange_affine.linear()
                                               << endl);
+
+
+
+
+
+
+
 
     // xxxxxxxxxxxxxx  the following makes an inquiry for the pose of the part
     // of interest specify the part name, send it in the goal message, wait for
@@ -366,63 +377,3 @@ int main(int argc, char** argv) {
         .sleep();  // wait for the motion to complete (dead reckoning)
     ROS_INFO("done with first trajectory");
     // xxxxxxxxxxxxxxxxxx
-
-    // go to pose to touch top of gear part; same x and y, but lower z value for
-    // flange origin
-    flange_origin << g_perceived_object_pose.pose.position.x,
-        g_perceived_object_pose.pose.position.y, 0.011;
-    goal_flange_affine.translation() = flange_origin;
-    ROS_INFO_STREAM("move to flange origin= "
-                    << goal_flange_affine.translation().transpose() << endl);
-
-    g_q_vec_arm_Xd =
-        optimal_path.back();  // extract the last joint-space pose from the
-                              // plan, so can use it for start of next plan
-    // better would be to get resulting joint-space values from joint_states
-    // compute an optimal Cartesian motion in joint space from current
-    // joint-space pose to desired Cartesian pose
-    optimal_path.clear();
-    nsteps = 100;  // tune me
-    // compute the plan, to be returned in optimal_path
-    if (!pCartTrajPlanner->plan_cartesian_path_w_rot_interp(
-            g_q_vec_arm_Xd, goal_flange_affine, nsteps, optimal_path)) {
-        ROS_WARN(
-            "no feasible IK path for specified Cartesian motion; quitting");
-        return 1;
-    }
-    // convert the path to a trajectory (adds joint-space names,  arrival times,
-    // etc)
-    pCartTrajPlanner->path_to_traj(optimal_path, arrival_time, new_trajectory);
-    print_traj(new_trajectory);
-    traj_publisher.publish(new_trajectory);  // publish the trajectory
-    ros::Duration(arrival_time).sleep();     // wait for the motion
-    ROS_INFO("done with second trajectory");
-    ros::Duration(3.0).sleep();  // dwell here to  observe contact
-    // xxxxxxxxxxxxxxxxxx
-
-    // depart vertically: same x and y, but move to higher z value
-    flange_origin << g_perceived_object_pose.pose.position.x,
-        g_perceived_object_pose.pose.position.y, 0.5;
-    goal_flange_affine.translation() = flange_origin;
-    ROS_INFO_STREAM("move to flange origin= "
-                    << goal_flange_affine.translation().transpose() << endl);
-    g_q_vec_arm_Xd = optimal_path.back();  // start from the joint-space pose
-                                           // that ended the prior plan
-    // convert move to an optimal joint-space path:
-    optimal_path.clear();
-    nsteps = 100;  // lots of points for smooth motion
-
-    if (!pCartTrajPlanner->plan_cartesian_path_w_rot_interp(
-            g_q_vec_arm_Xd, goal_flange_affine, nsteps, optimal_path)) {
-        ROS_WARN(
-            "no feasible IK path for specified Cartesian motion; quitting");
-        return 1;
-    }
-
-    pCartTrajPlanner->path_to_traj(optimal_path, arrival_time, new_trajectory);
-    print_traj(new_trajectory);
-    traj_publisher.publish(new_trajectory);  // publish the trajectory
-    ros::Duration(arrival_time).sleep();     // wait for the motion
-
-    ROS_INFO("done with last trajectory");
-}

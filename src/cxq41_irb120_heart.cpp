@@ -1,16 +1,4 @@
 
-
-    // the following is an std::vector of affines.  It describes a path in
-    // Cartesian coords, including orientations not needed yet; is constructed
-    // inside the generic planner by interpolation std::vector<Eigen::Affine3d>
-    // affine_path;
-    Eigen::Matrix3d R_FaceAudience;  // define an orientataion corresponding to
-                             // toolflange facing audience
-    Eigen::Vector3d x_axis, y_axis, z_axis, flange_origin;
-    z_axis << 1, 0, 0;             // ! points facing audience
-    x_axis << 0, 1, 0;             // arbitrary
-    y_axis = z_axis.cross(x_axis);  // construct y-axis consistent with
-                                    // right-hand coordinate frame
     R_FaceAudience.col(0) = x_axis;
     R_FaceAudience.col(1) = y_axis;
     R_FaceAudience.col(2) = z_axis;
