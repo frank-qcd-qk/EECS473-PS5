@@ -1,15 +1,28 @@
 # cxq41_ps5_irb120_reactive
 
 Code created by CXQ41@case.edu, the great and smart Frank Qian (Just kidding)...
+Dependencies adopted from Dr. Neuman's 473 sample code...
 
-## Example usage
+## Running it...
 
-If somehow you ended up here, you must be very bored or you are a student taking modern robot programming and you have no clue how to write the code. 
+To run this "fun" code, you will also need irb120 dependencies. I have created a minimal dependency so that you don't need to download everything from learning ros, but just the specific for running this code demo. Dependencies can be found here: (Credit to Dr. Neuman)
+https://github.com/frank-qcd-qk/EECS473-IRB120_Dependencies.git
 
-If you download the code and still can't figure out how to run it, go get some help from your TA or Dr. Newman.
+The dependencies should be put the same location with your code in roscd src folder.
 
-## Running tests/demos
+If you have previously compiled irb120 code from learning ros before, it is highly recommended that you clean the build, devel and install folder so that there are no wired issue of package mis behavioring.
 
-I guess I will just post what grade I get for this as a "demo" of if this works or not....
+To see the path in a visualized way, I recommend to take a look at jsk's rvis add-on, link: 
+http://wiki.ros.org/jsk_rviz_plugins
 
-    
+The included RVIZ config defaultly runs in the environment where jsk rviz plugin is installed.
+
+To start the code:
+roslaunch cxq41_ps5_irb120_reactive cxq41_ps5.launch
+rosrun cxq41_ps5_irb120_reactive cxq41_ps5_irb120_reactive
+
+## Live demo...
+Find it here:
+https://youtu.be/w5ESwQgUAdI
+Chinese useres:
+Link not yet available via Bilibili
