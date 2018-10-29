@@ -372,12 +372,12 @@ int main(int argc, char** argv) {
                     "[PathDebug] Current choice is go positive side on X "
                     "axis...");
                 //* Calculate and gets to the correct side
-                desiredX = g_perceived_object_pose.pose.position.x + 0.07;
+                desiredX = g_perceived_object_pose.pose.position.x + 0.08;
                 desiredY = g_perceived_object_pose.pose.position.y;
                 ROS_INFO(
                     "[PathDebug] Desired inital targetX for toolflange is: %f",
                     desiredX);
-                moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
+                moveRobotTo(desiredX, desiredY, 0.005, 50, 2);
                 ROS_INFO("[PathDebug] Arm Ready to push along X...");
                 ros::Duration(2)
                     .sleep();  // For debug stop the screen print to see...
@@ -394,19 +394,19 @@ int main(int argc, char** argv) {
                 ROS_INFO(
                     "[PathDebug] Desired retrieve targetX for toolflange is: %f",
                     desiredX);                
-                moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
+                moveRobotTo(desiredX, desiredY, 0.005, 50, 1);
                 ROS_INFO("[PathDebug] X Axis back out motion complete....");
 
             } else {
                 ROS_INFO(
                     "[PathDebug] Current choice is go negative side on X "
                     "axis...");
-                desiredX = g_perceived_object_pose.pose.position.x - 0.07;
+                desiredX = g_perceived_object_pose.pose.position.x - 0.08;
                 desiredY = g_perceived_object_pose.pose.position.y;
                 ROS_INFO(
                     "[PathDebug] Desired inital targetX for toolflange is: %f",
                     desiredX);
-                moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
+                moveRobotTo(desiredX, desiredY, 0.005, 50, 2);
                 ROS_INFO("[PathDebug] Arm Ready to push along X...");
                 ros::Duration(2)
                     .sleep();  // For debug stop the screen print to see...
@@ -423,13 +423,13 @@ int main(int argc, char** argv) {
                 ROS_INFO(
                     "[PathDebug] Desired retrieve targetX for toolflange is: %f",
                     desiredX);                
-                moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
+                moveRobotTo(desiredX, desiredY, 0.005, 50, 1);
                 ROS_INFO("[PathDebug] X Axis back out motion complete....");
             }
             updatePosition();  // Reset above the object once finished operation
             moveRobotTo(g_perceived_object_pose.pose.position.x,
-                        g_perceived_object_pose.pose.position.y, 0.3, 50,
-                        2.5);  // Hover above the robot to show identification
+                        g_perceived_object_pose.pose.position.y, 0.2, 50,
+                        2);  // Hover above the robot to show identification
                                // sucess. Abort if not
             ROS_INFO(
                 "[PathDebug] After pushing across X axis, current X,Y position is: %f,%f.",
@@ -447,11 +447,11 @@ int main(int argc, char** argv) {
                     "axis...");
                 //* Calculate and gets to the correct side
                 desiredX = g_perceived_object_pose.pose.position.x;
-                desiredY = g_perceived_object_pose.pose.position.y + 0.07;
+                desiredY = g_perceived_object_pose.pose.position.y + 0.08;
                 ROS_INFO(
                     "[PathDebug] Desired inital targetY for toolflange is: %f",
                     desiredY);
-                moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
+                moveRobotTo(desiredX, desiredY, 0.005, 50, 2);
                 ROS_INFO("[PathDebug] Arm Ready to push along Y...");
                 ros::Duration(2)
                     .sleep();  // For debug stop the screen print to see...
@@ -468,16 +468,16 @@ int main(int argc, char** argv) {
                 ROS_INFO(
                     "[PathDebug] Desired retrieve targetY for toolflange is: %f",
                     desiredX);                
-                moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
+                moveRobotTo(desiredX, desiredY, 0.005, 50, 1);
                 ROS_INFO("[PathDebug] Y Axis back out motion complete....");
 
             } else {
                 ROS_INFO("Current Case is go smaller side on Y axis...");
                 desiredX = g_perceived_object_pose.pose.position.x;
-                desiredY = g_perceived_object_pose.pose.position.y - 0.07;
+                desiredY = g_perceived_object_pose.pose.position.y - 0.08;
                 ROS_INFO("Desired inital targetY for toolflange is: %f",
                          desiredY);
-                moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
+                moveRobotTo(desiredX, desiredY, 0.005, 50, 2);
                 ROS_INFO("[PathDebug] Arm Ready to push along Y...");
                 ros::Duration(2)
                     .sleep();  // For debug stop the screen print to see...
@@ -493,13 +493,13 @@ int main(int argc, char** argv) {
                 ROS_INFO(
                     "[PathDebug] Desired retrieve targetY for toolflange is: %f",
                     desiredX);                    
-                moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
+                moveRobotTo(desiredX, desiredY, 0.005, 50, 1);
                 ROS_INFO("[PathDebug] Y Axis back out motion complete....");
             }
             updatePosition();  // Reset above the object once finished operation
             moveRobotTo(g_perceived_object_pose.pose.position.x,
-                        g_perceived_object_pose.pose.position.y, 0.3, 50,
-                        2.5);  // Hover above the robot to show identification
+                        g_perceived_object_pose.pose.position.y, 0.2, 50,
+                        2);  // Hover above the robot to show identification
                                // sucess. Abort if not
             ROS_INFO(
                 "[PathDebug] After pushing across X axis, current X,Y position is: %f,%f.",
