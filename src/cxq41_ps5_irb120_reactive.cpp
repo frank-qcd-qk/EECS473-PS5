@@ -389,7 +389,7 @@ int main(int argc, char** argv) {
                 ROS_INFO("[PathDebug] X Axis push motion complete....");
                 ros::Duration(2)
                     .sleep();  // for debug stop the screen print to see...
-                desiredX = targetX - 0.07 - 0.05;
+                desiredX = targetX + 0.05;
                 moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
                 ROS_INFO("[PathDebug] X Axis back out motion complete....");
 
@@ -415,7 +415,7 @@ int main(int argc, char** argv) {
                 ROS_INFO("[PathDebug] X Axis push motion complete....");
                 ros::Duration(2)
                     .sleep();  // for debug stop the screen print to see...
-                desiredX = targetX + 0.05 + 0.05;
+                desiredX = targetX - 0.05;
                 moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
                 ROS_INFO("[PathDebug] X Axis back out motion complete....");
             }
@@ -452,7 +452,7 @@ int main(int argc, char** argv) {
                 ROS_INFO("Y Axis motion complete....");
                 ros::Duration(2)
                     .sleep();  // for debug stop the screen print to see...
-                desiredY = targetY - 0.07 - 0.05;
+                desiredY = targetY + 0.05;
                 moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
                 ROS_INFO("[PathDebug] Y Axis back out motion complete....");
 
@@ -474,7 +474,7 @@ int main(int argc, char** argv) {
                 ROS_INFO("Y Axis motion complete....");
                 ros::Duration(2)
                     .sleep();  // for debug stop the screen print to see...
-                desiredY = targetY + 0.05 + 0.05;
+                desiredY = targetY - 0.05;
                 moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
                 ROS_INFO("[PathDebug] Y Axis back out motion complete....");                    
             }
