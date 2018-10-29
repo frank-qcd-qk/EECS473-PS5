@@ -349,7 +349,8 @@ int main(int argc, char** argv) {
         ROS_ERROR("NO path found, throwing error now....");
         return 1;
     }
-    ROS_INFO("[StructureDebug] INITIATION DONE!!! HAND OVER to path finding...");
+    ROS_INFO(
+        "[StructureDebug] INITIATION DONE!!! HAND OVER to path finding...");
 
     // Gear height is 0.005
     // Gear diameter is 0.04
@@ -389,7 +390,7 @@ int main(int argc, char** argv) {
                 ROS_INFO("[PathDebug] X Axis push motion complete....");
                 ros::Duration(2)
                     .sleep();  // for debug stop the screen print to see...
-                desiredX = targetX + 0.05;
+                desiredX = targetX + 0.1;
                 moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
                 ROS_INFO("[PathDebug] X Axis back out motion complete....");
 
@@ -415,7 +416,7 @@ int main(int argc, char** argv) {
                 ROS_INFO("[PathDebug] X Axis push motion complete....");
                 ros::Duration(2)
                     .sleep();  // for debug stop the screen print to see...
-                desiredX = targetX - 0.05;
+                desiredX = targetX - 0.1;
                 moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
                 ROS_INFO("[PathDebug] X Axis back out motion complete....");
             }
@@ -424,6 +425,10 @@ int main(int argc, char** argv) {
                         g_perceived_object_pose.pose.position.y, 0.3, 50,
                         2.5);  // Hover above the robot to show identification
                                // sucess. Abort if not
+            ROS_INFO(
+                "[PathDebug] After pushing across X axis, current X,Y position is: %f,%f.",
+                g_perceived_object_pose.pose.position.x,
+                g_perceived_object_pose.pose.position.y);
             ROS_INFO(
                 "[PathDebug] Tool Flange Reset from X motion ready to "
                 "hover...");
@@ -446,13 +451,14 @@ int main(int argc, char** argv) {
                     .sleep();  // For debug stop the screen print to see...
                 //* Push along one axis only
                 desiredY = targetY + 0.07;
-                ROS_INFO("Desired final targetY for toolflange is: %f",
-                         desiredY);
+                ROS_INFO(
+                    "[PathDebug] Desired final targetY for toolflange is: %f",
+                    desiredY);
                 moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
-                ROS_INFO("Y Axis motion complete....");
+                ROS_INFO("[PathDebug] Y Axis motion complete....");
                 ros::Duration(2)
                     .sleep();  // for debug stop the screen print to see...
-                desiredY = targetY + 0.05;
+                desiredY = targetY + 0.1;
                 moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
                 ROS_INFO("[PathDebug] Y Axis back out motion complete....");
 
@@ -474,32 +480,41 @@ int main(int argc, char** argv) {
                 ROS_INFO("Y Axis motion complete....");
                 ros::Duration(2)
                     .sleep();  // for debug stop the screen print to see...
-                desiredY = targetY - 0.05;
+                desiredY = targetY - 0.1;
                 moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
-                ROS_INFO("[PathDebug] Y Axis back out motion complete....");                    
+                ROS_INFO("[PathDebug] Y Axis back out motion complete....");
             }
             updatePosition();  // Reset above the object once finished operation
             moveRobotTo(g_perceived_object_pose.pose.position.x,
                         g_perceived_object_pose.pose.position.y, 0.3, 50,
                         2.5);  // Hover above the robot to show identification
                                // sucess. Abort if not
+            ROS_INFO(
+                "[PathDebug] After pushing across X axis, current X,Y position is: %f,%f.",
+                g_perceived_object_pose.pose.position.x,
+                g_perceived_object_pose.pose.position.y);
             ROS_INFO("[PathDebug] Tool Flange Reset to hover...");
         }
         updatePosition();  // Need to update position in case X axis got
                            // moved during the process
         // Tune: Controll for deciding if target has been reached or not.
         // Including Error.
-        if (abs(desiredX - g_perceived_object_pose.pose.position.x) <= 0.015) {
+        if (abs(targetX - g_perceived_object_pose.pose.position.x) <= 0.015) {
             arrivedTargetX = true;
-            ROS_INFO("[DecisionDebug] Current Detection X axis motion complete!");
+            ROS_INFO(
+                "[DecisionDebug] Current Detection X axis motion complete!");
         }
-        if (abs(desiredY - g_perceived_object_pose.pose.position.y) <= 0.015) {
+        if (abs(targetY - g_perceived_object_pose.pose.position.y) <= 0.015) {
             arrivedTargetY = true;
-            ROS_INFO("[DecisionDebug] Current Detection Y axis motion complete!");
+            ROS_INFO(
+                "[DecisionDebug] Current Detection Y axis motion complete!");
         }
         if (arrivedTargetX && arrivedTargetY) {
-            ROS_INFO("[DecisionDebug] Current Detection both axis completed. Breaking loop...");
+            ROS_INFO(
+                "[DecisionDebug] Current Detection both axis completed. "
+                "Breaking loop...");
         }
     }
-    ROS_INFO("[DecisionDebug] ystem consider target has been aquired....END.....");
+    ROS_INFO(
+        "[DecisionDebug] ystem consider target has been aquired....END.....");
 }
