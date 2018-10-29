@@ -386,7 +386,7 @@ int main(int argc, char** argv) {
                 ROS_INFO(
                     "[PathDebug] Desired final targetX for toolflange is: %f",
                     desiredX);
-                moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
+                moveRobotTo(desiredX, desiredY, 0.005, 50, 10);
                 ROS_INFO("[PathDebug] X Axis push motion complete....");
                 ros::Duration(2)
                     .sleep();  // for debug stop the screen print to see...
@@ -415,7 +415,7 @@ int main(int argc, char** argv) {
                 ROS_INFO(
                     "[PathDebug] Desired final targetX for toolflange is: %f",
                     desiredX);
-                moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
+                moveRobotTo(desiredX, desiredY, 0.005, 50, 10);
                 ROS_INFO("[PathDebug] X Axis push motion complete....");
                 ros::Duration(2)
                     .sleep();  // for debug stop the screen print to see...
@@ -460,7 +460,7 @@ int main(int argc, char** argv) {
                 ROS_INFO(
                     "[PathDebug] Desired final targetY for toolflange is: %f",
                     desiredY);
-                moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
+                moveRobotTo(desiredX, desiredY, 0.005, 50, 10);
                 ROS_INFO("[PathDebug] Y Axis motion complete....");
                 ros::Duration(2)
                     .sleep();  // for debug stop the screen print to see...
@@ -485,7 +485,7 @@ int main(int argc, char** argv) {
                 desiredY = targetY - 0.05;
                 ROS_INFO("Desired final targetY for toolflange is: %f",
                          desiredY);
-                moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
+                moveRobotTo(desiredX, desiredY, 0.005, 50, 10);
                 ROS_INFO("Y Axis motion complete....");
                 ros::Duration(2)
                     .sleep();  // for debug stop the screen print to see...
