@@ -17,14 +17,19 @@ http://wiki.ros.org/jsk_rviz_plugins
 
 The included RVIZ config defaultly runs in the environment where jsk rviz plugin is installed.
 
-To start the code:
+## To start the code:
 
 roslaunch cxq41_ps5_irb120_reactive cxq41_ps5.launch
 
 rosrun cxq41_ps5_irb120_reactive cxq41_ps5_irb120_reactive
 
+Some potential intial test poses for gear_part_ariac include: (-0.4,0.2), (-0.4,-0.2), (0.3,-0.2)
+
+Be aware that robot has physical limitation and some position are just simply non-reachable...
+
 ## Live demo...
 Find it here:
 https://youtu.be/w5ESwQgUAdI
+
 Chinese useres:
-Link not yet available via Bilibili
+Link not yet available via Bilibili.

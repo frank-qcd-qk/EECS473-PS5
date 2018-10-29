@@ -279,9 +279,8 @@ int main(int argc, char** argv) {
                                     // result in ugly/dangerous motion
     int nsteps = 5;  // will need to specify how many interpolation points in
                      // Cartesian path; this is pretty coarse
-    //! TUNE back the time coefficient!!!
     double arrival_time =
-        1.0;  // will  need to specify arrival time for a Cartesian path
+        3.0;  // will  need to specify arrival time for a Cartesian path
 
     // for this next line, I apparently did something wrong.  I should not have
     // to  instantiate a cartesianInterpolator, since the generic planner
@@ -340,10 +339,9 @@ int main(int argc, char** argv) {
     goal_flange_affine.linear() =
         R_down;  // set the  goal orientation for flange to point down; will not
                  // need to change this for now
-    //! Tune back the motion time coefficient!!!
     moveRobotTo(g_perceived_object_pose.pose.position.x,
                 g_perceived_object_pose.pose.position.y, 0.3, 50,
-                2.5);  // Hover above the robot to show identification sucess.
+                2);  // Hover above the robot to show identification sucess.
                        // Abort if not
     if (killSwitch == 1) {
         ROS_ERROR("NO path found, throwing error now....");
