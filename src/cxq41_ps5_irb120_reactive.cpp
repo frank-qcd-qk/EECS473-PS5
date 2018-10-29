@@ -391,6 +391,9 @@ int main(int argc, char** argv) {
                 ros::Duration(2)
                     .sleep();  // for debug stop the screen print to see...
                 desiredX = targetX + 0.1;
+                ROS_INFO(
+                    "[PathDebug] Desired retrieve targetX for toolflange is: %f",
+                    desiredX);                
                 moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
                 ROS_INFO("[PathDebug] X Axis back out motion complete....");
 
@@ -417,6 +420,9 @@ int main(int argc, char** argv) {
                 ros::Duration(2)
                     .sleep();  // for debug stop the screen print to see...
                 desiredX = targetX - 0.1;
+                ROS_INFO(
+                    "[PathDebug] Desired retrieve targetX for toolflange is: %f",
+                    desiredX);                
                 moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
                 ROS_INFO("[PathDebug] X Axis back out motion complete....");
             }
@@ -459,6 +465,9 @@ int main(int argc, char** argv) {
                 ros::Duration(2)
                     .sleep();  // for debug stop the screen print to see...
                 desiredY = targetY + 0.1;
+                ROS_INFO(
+                    "[PathDebug] Desired retrieve targetY for toolflange is: %f",
+                    desiredX);                
                 moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
                 ROS_INFO("[PathDebug] Y Axis back out motion complete....");
 
@@ -481,6 +490,9 @@ int main(int argc, char** argv) {
                 ros::Duration(2)
                     .sleep();  // for debug stop the screen print to see...
                 desiredY = targetY - 0.1;
+                ROS_INFO(
+                    "[PathDebug] Desired retrieve targetY for toolflange is: %f",
+                    desiredX);                    
                 moveRobotTo(desiredX, desiredY, 0.005, 50, 5);
                 ROS_INFO("[PathDebug] Y Axis back out motion complete....");
             }
@@ -499,12 +511,12 @@ int main(int argc, char** argv) {
                            // moved during the process
         // Tune: Controll for deciding if target has been reached or not.
         // Including Error.
-        if (abs(targetX - g_perceived_object_pose.pose.position.x) <= 0.015) {
+        if (abs(targetX - g_perceived_object_pose.pose.position.x) <= 0.01) {
             arrivedTargetX = true;
             ROS_INFO(
                 "[DecisionDebug] Current Detection X axis motion complete!");
         }
-        if (abs(targetY - g_perceived_object_pose.pose.position.y) <= 0.015) {
+        if (abs(targetY - g_perceived_object_pose.pose.position.y) <= 0.01) {
             arrivedTargetY = true;
             ROS_INFO(
                 "[DecisionDebug] Current Detection Y axis motion complete!");
