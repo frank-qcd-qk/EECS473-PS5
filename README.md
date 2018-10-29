@@ -18,7 +18,9 @@ http://wiki.ros.org/jsk_rviz_plugins
 The included RVIZ config defaultly runs in the environment where jsk rviz plugin is installed.
 
 To start the code:
+
 roslaunch cxq41_ps5_irb120_reactive cxq41_ps5.launch
+
 rosrun cxq41_ps5_irb120_reactive cxq41_ps5_irb120_reactive
 
 ## Live demo...
