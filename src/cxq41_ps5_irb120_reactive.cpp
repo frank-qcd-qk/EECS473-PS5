@@ -364,6 +364,22 @@ int main(int argc, char** argv) {
         0.00;  // Local variable for storing calculated target Y position
     while (ros::ok && (!arrivedTargetX || !arrivedTargetY)) {
         updatePosition();  // Always first update position
+        //Check so that no redundant operation are operated...
+        if (abs(targetX - g_perceived_object_pose.pose.position.x) <= 0.01) {
+            arrivedTargetX = true;
+            ROS_INFO(
+                "[DecisionDebug] Current Detection X axis motion complete!");
+        }
+        if (abs(targetY - g_perceived_object_pose.pose.position.y) <= 0.01) {
+            arrivedTargetY = true;
+            ROS_INFO(
+                "[DecisionDebug] Current Detection Y axis motion complete!");
+        }
+        if (arrivedTargetX && arrivedTargetY) {
+            ROS_INFO(
+                "[DecisionDebug] Current Detection both axis completed. "
+                "Breaking loop...");
+        }        
         if (!arrivedTargetX) {
             // If statement decide which side of the gear the robot should be
             ROS_INFO("[PathDebug] Current State: Moving along X axis...");
@@ -528,5 +544,5 @@ int main(int argc, char** argv) {
         }
     }
     ROS_INFO(
-        "[DecisionDebug] ystem consider target has been aquired....END.....");
+        "[DecisionDebug] System consider target has been aquired....END.....");
 }
