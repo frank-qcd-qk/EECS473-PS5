@@ -40,6 +40,9 @@ std::vector<double> g_planner_joint_weights{
     3, 3, 2, 1, 1, 0.5};  // specify weights to use for planner optimization
 string g_object_name("gear_part_ariac");  // hard-coded object of interest name;
                                           // edit this for different objects
+// Tune: The following value is used for specify target:
+float targetX = 0.3;
+float targetY = 0.2;
 
 //! The following variables are made global in order to make the function for
 //! move robot to runnable.
@@ -178,13 +181,14 @@ void moveRobotTo(float x, float y, float z, int resolution, int motionTime) {
     // convert the path to a trajectory (adds joint-space names,  arrival times,
     // etc)
     pCartTrajPlanner->path_to_traj(optimal_path, motionTime, new_trajectory);
-    //print_traj(new_trajectory);  // Enable only if you want to get flushed by data.
+    // print_traj(new_trajectory);  // Enable only if you want to get flushed by
+    // data.
     traj_publisher.publish(new_trajectory);  // publish the trajectory
     ros::Duration(motionTime).sleep();       // wait for the motion
     ROS_INFO("Movement complete!....");
 }
 
-void updatePosition(){
+void updatePosition() {
     ros::NodeHandle n;
     //! The following part of the code is the action server for obtaining the
     // set up an action client to query object poses using the magic object
@@ -248,7 +252,7 @@ int main(int argc, char** argv) {
         start_flange_affine;  // specify start and goal in Cartesian coords
     trajectory_msgs::JointTrajectory
         new_trajectory;  // will package trajectory messages here
-    
+
     updatePosition();
     if (killSwitch == 1) {
         ROS_ERROR("NO object found, throwing error now....");
@@ -273,8 +277,9 @@ int main(int argc, char** argv) {
                                     // result in ugly/dangerous motion
     int nsteps = 5;  // will need to specify how many interpolation points in
                      // Cartesian path; this is pretty coarse
+    //! TUNE back the time coefficient!!!
     double arrival_time =
-        5.0;  // will  need to specify arrival time for a Cartesian path
+        1.0;  // will  need to specify arrival time for a Cartesian path
 
     // for this next line, I apparently did something wrong.  I should not have
     // to  instantiate a cartesianInterpolator, since the generic planner
@@ -333,19 +338,56 @@ int main(int argc, char** argv) {
     goal_flange_affine.linear() =
         R_down;  // set the  goal orientation for flange to point down; will not
                  // need to change this for now
-    ROS_INFO("INITIATION DONE!!! HAND OVER to Frank's code");
-    ros::Duration(10)
-        .sleep();  // Debug purpose so the command line is not jammed.
-
+    //! Tune back the motion time coefficient!!!
     moveRobotTo(g_perceived_object_pose.pose.position.x,
-                g_perceived_object_pose.pose.position.y, 0.5, 10, 2);
+                g_perceived_object_pose.pose.position.y, 0.3, 50, 2.5); //Hover above the robot to show identification sucess. Abort if not
     if (killSwitch == 1) {
         ROS_ERROR("NO path found, throwing error now....");
         return 1;
     }
-    ros::Duration(10)
-        .sleep();  // Debug purpose so the command line is not jammed.
-    updatePosition();
-    moveRobotTo(g_perceived_object_pose.pose.position.x,
-                g_perceived_object_pose.pose.position.y, 0.5, 10, 2);
+    ROS_INFO("INITIATION DONE!!! HAND OVER to path finding...");
+
+    // Gear height is 0.005
+    // Gear diameter is 0.04
+    bool arrivedTargetX = false; //Switch for defining if target X position has been aquired
+    bool arrivedTargetY = false; //Switch for defining if target Y position has been aquired
+    float desiredX = 0.00;//Local variable for storing calculated target X position
+    float desiredY = 0.00;//Local variable for storing calculated target Y position
+    while (ros::ok && !arrivedTargetX && !arrivedTargetY) {
+        updatePosition(); //Always first update position
+        if(!arrivedTargetX){
+            //If statement decide which side of the gear the robot should be
+            if((targetX - g_perceived_object_pose.pose.position.x)<0){
+                //* Calculate and gets to the correct side
+                desiredX = g_perceived_object_pose.pose.position.x + 0.08;
+                desiredY = g_perceived_object_pose.pose.position.y;
+                ROS_INFO("Desired inital targetX for toolflange is: %f",desiredX);
+                moveRobotTo(desiredX,desiredY,0.005,50,0.5);
+                ROS_INFO("Arm Ready...");
+                ros::Duration(2).sleep();//For debug stop the screen print to see...
+                //* Push along one axis only
+                desiredX = targetX + 0.07;
+                desiredY = g_perceived_object_pose.pose.position.y;
+                ROS_INFO("Desired final targetX for toolflange is: %f",desiredX);
+                moveRobotTo(desiredX,desiredY,0.005,50,5);
+                ROS_INFO("X Axis motion complete....");
+                ros::Duration(2).sleep();//for debug stop the screen print to see...
+            }else{
+                desiredX = g_perceived_object_pose.pose.position.x - 0.08;
+                desiredY = g_perceived_object_pose.pose.position.y;
+                ROS_INFO("Desired inital targetX for toolflange is: %f",desiredX);
+                moveRobotTo(desiredX,desiredY,0.005,50,0.5);
+                ROS_INFO("Arm Ready...");
+                ros::Duration(2).sleep();//For debug stop the screen print to see...
+                //* Push along one axis only
+                desiredX = targetX - 0.05;
+                desiredY = g_perceived_object_pose.pose.position.y;
+                ROS_INFO("Desired final targetX for toolflange is: %f",desiredX);
+                moveRobotTo(desiredX,desiredY,0.005,50,5);
+                ROS_INFO("X Axis motion complete....");
+                ros::Duration(2).sleep();//for debug stop the screen print to see...
+            }
+            arrivedTargetX = true;
+        }
+    }
 }
